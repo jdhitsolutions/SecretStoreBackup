@@ -9,7 +9,7 @@ schema: 2.0.0
 
 ## SYNOPSIS
 
-{{ Fill in the Synopsis }}
+Import items into a Secrets Management vault.
 
 ## SYNTAX
 
@@ -20,17 +20,29 @@ Import-SecretStore [-Name] <String> [-Value] <Object> [-Type <String>] [-Metadat
 
 ## DESCRIPTION
 
-{{ Fill in the Description }}
+Import-SecretStore is designed to be used in conjunction with Export-SecretStore. The command should work with any export saved to a file using Export-Clixml or converted to JSON. Since all of the values in the file are presumably plaintext, anything that needs to be stored as a secure string will be, using the current system. The entire process allows you to back up a vault to a file and then recreate the vault on a new system. The new vault must already exist before importing.
+
+It is possible that not all metadata will be properly imported or imported as the correct type.
 
 ## EXAMPLES
 
 ### Example 1
 
 ```powershell
-PS C:\> {{ Add example code here }}
+PS C:\> Import-clixml c:\work\saved.xml | Import-SecretStore -vault NewSecrets
 ```
 
-{{ Add example description here }}
+This example assumes that saved.xml was created using Export-SecretStore. The file is imported and piped to Import-SecretStore which recreates the entries in the specified vault. The vault must already exist. You will be prompted for the vault password.
+
+### Example 2
+
+```powershell
+PS C:\> Register-SecretVault -Name demo -Description "test vault" -ModuleName microsoft.powershell.secretstore
+PS C:\> $in = Get-Content C:\work\demo.json | convertfrom-json
+PS C:\> $in | Import-SecretStore -vault demo
+```
+
+The JSON file was created from Export-SecretStore. Due to how JSON data is converted, you need an interim step to save the converted data to a variable and then import from that.
 
 ## PARAMETERS
 
@@ -52,7 +64,15 @@ Accept wildcard characters: False
 
 ### -Metadata
 
-{{ Fill Metadata Description }}
+Hashtable containing Name/Value pair that are stored in the vault. The specified extension vault may not support secret metadata, in which case the operation will fail. The metadata Name/Value value type must be one of the following:
+
+    - string
+
+    - int
+
+    - DateTime
+
+If you exported a secret with Export0-SecretStore, metadata was also exported and will be used on import.
 
 ```yaml
 Type: Hashtable
@@ -84,7 +104,7 @@ Accept wildcard characters: False
 
 ### -NoClobber
 
-{{ Fill NoClobber Description }}
+When used this parameter will cause an error if the secret metadata already exists.
 
 ```yaml
 Type: SwitchParameter
@@ -116,7 +136,7 @@ Accept wildcard characters: False
 
 ### -Type
 
-The secret type
+The secret type.
 
 ```yaml
 Type: String
@@ -149,7 +169,7 @@ Accept wildcard characters: False
 
 ### -Vault
 
-Enter the vault name.
+Enter the vault name. The vault must exist before importing.
 
 ```yaml
 Type: String
@@ -203,3 +223,7 @@ Learn more about PowerShell: http://jdhitsolutions.com/blog/essential-powershell
 ## RELATED LINKS
 
 [Export-SecretStore](Export-SecretStore.md)
+
+[Set-Secret]()
+
+[Set-SecretInfo]()

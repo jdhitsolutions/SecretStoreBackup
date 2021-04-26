@@ -17,15 +17,6 @@ Function Import-SecretStore {
         [switch]$NoClobber,
         [Parameter( Mandatory, HelpMessage = "Enter the vault name.")]
         [ValidateNotNullOrEmpty()]
-        [ValidateScript( {
-                Try {
-                    Test-SecretVault $_ -ErrorAction Stop
-                }
-                Catch {
-                    Throw $_.Exception.Message
-                    $False
-                }
-            })]
         [string]$Vault,
         [Parameter(Mandatory, HelpMessage = "Enter the secure string password to unlock the vault.")]
         [SecureString]$Password
@@ -48,8 +39,8 @@ Function Import-SecretStore {
             Write-Verbose "Importing Secret $Name [$type]"
 
             $params = @{
-                Name      = $_.Name
-                Vault     = $_.Vault
+                Name      = $Name
+                Vault     = $Vault
                 NoClobber = $NoClobber
             }
             if ($Metadata) {
