@@ -1,7 +1,7 @@
 
 Try {
-    $a = Get-Module -name Microsoft.PowerShell.SecretManagement -ErrorAction stop
-    $b = Get-Module -name Microsoft.PowerShell.SecretStore -ErrorAction stop
+    $a = Get-Module -name Microsoft.PowerShell.SecretManagement -ErrorAction stop -ListAvailable
+    $b = Get-Module -name Microsoft.PowerShell.SecretStore -ErrorAction stop -ListAvailable
     if ($a -AND $b) {
         Get-ChildItem -path $PSScriptroot\functions\*.ps1 | ForEach-Object { . $_.Fullname}
     }
