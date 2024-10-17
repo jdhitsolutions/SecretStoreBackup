@@ -31,12 +31,8 @@ body:
       label: PowerShell version
       description: What version of PowerShell are you running?
       options:
-        - '4.0'
         - '5.1'
-        - 6.x
-        - '7.0'
-        - '7.1'
-        - '7.2'
+        - '7.x'
         - Other
     validations:
       required: true
@@ -60,6 +56,8 @@ body:
       description: Have you verified the following?
       options:
         - label: You are using the latest version of this module.
+          required: true
+        - label: You are using the latest version of the Microsoft Secret Store and Secrets Management modules.
           required: true
         - label: You have read this repository's README file.
         - label: You have read full help and examples for the command you are having problems with.
