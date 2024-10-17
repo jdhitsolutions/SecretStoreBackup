@@ -13,60 +13,77 @@ Export the contents of a Secret Management vault.
 
 ## SYNTAX
 
+### asFile (Default)
+
 ```yaml
-Export-SecretStore [-Vault] <String> -Password <SecureString> [-SkipTest] [<CommonParameters>]
+Export-SecretStore [-Vault] <String> -Password <SecureString> [-SkipTest] -FilePath <String>  [<CommonParameters>]
+```
+
+### asObject
+
+```yaml
+Export-SecretStore [-Vault] <String> -Password <SecureString> [-SkipTest] [-AsObject] [<CommonParameters>]
 ```
 
 ## DESCRIPTION
 
-Export-SecretStore will export all secrets in a Secret Management store. Each secret will be exported as a custom object that you can use as you want. You might export to an XML file or convert to a JSON file. Use Import-SecretStore to restore the contents to a new store or write your own importing code.
+Export-SecretStore will export all secrets in a Secret Management store. Each secret will be exported as a custom object that you can use as you want. The default behavior is to export to a cliXML. But you can use the -AsObject parameter to write vault objects to the pipeline. You might export to a JSON file or create a custom export solution. Use Import-SecretStore to restore the contents to a new store or write your own importing code.
 
-NOTE: EVERYTHING WILL BE EXPORTED AS PLAIN TEXT. IF YOU EXPORT TO A FILE YOU MUST PROTECT IT.
+NOTE: SECRETS WILL BE EXPORTED AS PLAIN TEXT. IF YOU EXPORT TO A FILE YOU MUST PROTECT IT.
 
 ## EXAMPLES
+
 
 ### Example 1
 
 ```powershell
-PS C:\> Export-SecretStore -vault secrets
+PS C:\> Export-SecretStore -Vault secrets -password $pass -SkipTest -FilePath c:\work\secrets.xml
+```
+
+Export the secrets vault to c:\work\secrets.xml. The $pass variable is a secure string.
+
+### Example 2
+
+```powershell
+PS C:\> Export-SecretStore -vault secrets -asObject
 
 Name         : demo3
 Vault        : secrets
-Metadata     : {[updated, 4/15/2021 8:52 AM], [tags, demo,test], [ver, 1]}
+Metadata     : {[updated, 4/15/2024 8:52 AM], [tags, demo,test], [ver, 1]}
 OriginalType : String
 Value        : foo
-ExportDate   : 4/16/2021 8:41 AM
-Computername : WINDOWSDESK
-Username     : WINDOWSDESK\Jeff
+ExportDate   : 4/16/2024 8:41 AM
+Computername : WINDESK11
+Username     : WINDESK11\Jeff
 
 Name         : company
 Vault        : secrets
 Metadata     : {}
 OriginalType : PSCredential
 Value        : {Password, Username}
-ExportDate   : 4/16/2021 8:41 AM
-Computername : WINDOWSDESK
-Username     : WINDOWSDESK\Jeff
+ExportDate   : 4/16/2024 8:41 AM
+Computername : WINDESK11
+Username     : WINDESK11\Jeff
 ...
 ```
 
 Export all items in the Secrets vault. You will be prompted for the password. The PSCredential object will store the password in plain text.
 
-### Example 2
+### Example 3
 
 ```powershell
-PS C:\>  Export-SecretStore -Vault secrets -password $pass  | where OriginalType -ne pscredential | Convertto-json | Out-File c:\work\export.json -NoClobber
+PS C:\>  Export-SecretStore -Vault secrets -password $pass -AsObject | where OriginalType -ne PSCredential | ConvertTo-json | Out-File c:\work\export.json -NoClobber
 ```
 
 Export all secrets other than PSCredentials, convert to JSON, and save to a file. The password variable is a secure string.
 
-### Example 3
+### Example 4
 
 ```powershell
-PS C:\> Export-SecretStore -Vault Lastpass -pass $pass -SkipTest | Export-Clixml c:\work\lp.xml
+PS C:\> Export-SecretStore -Vault 1Pass -pass $pass -SkipTest -FilePath c:\work\lp.xml
 ```
 
-Export the contents of the Lastpass vault to a cliXML file. Some vaults created by other SecretsManagement modules, like LastPass, may always fails when using Test-Vault. Export-SecretStore will test the specified vault by default, but you can choose to skip this step.
+Export the contents of the 1Pass vault to a cliXML file. Some vaults created by other SecretsManagement modules, like 1Pass, may always fails when using Test-Vault. Export-SecretStore will test the specified vault by default, but you can choose to skip this step.
 
 ## PARAMETERS
 
@@ -88,7 +105,7 @@ Accept wildcard characters: False
 
 ### -SkipTest
 
-Skip testing the vault. Some vaults created by other SecretsManagement modules, like LastPass, may always fails when using Test-Vault. Export-SecretStore will test the specified vault by default, but you can choose to skip this step.
+Skip testing the vault. Some vaults created by other SecretsManagement modules, like 1Pass, may always fails when using Test-Vault. Export-SecretStore will test the specified vault by default, but you can choose to skip this step.
 
 ```yaml
 Type: SwitchParameter
@@ -113,6 +130,38 @@ Aliases: Name
 
 Required: True
 Position: 0
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -AsObject
+
+Export the secrets as native objects that you can save to a file option of your choice.
+
+```yaml
+Type: SwitchParameter
+Parameter Sets: asObject
+Aliases:
+
+Required: False
+Position: Named
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -FilePath
+
+Enter the filename and path for your cliXML export.
+
+```yaml
+Type: String
+Parameter Sets: asFile
+Aliases:
+
+Required: True
+Position: Named
 Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False

@@ -1,19 +1,40 @@
 Function Export-SecretStore {
-    [cmdletbinding()]
+    [CmdletBinding(DefaultParameterSetName = "asFile")]
     [alias('xss')]
-    [Outputtype("SecretExport")]
+    [OutputType("SecretExport")]
     Param(
-        [Parameter(Position = 0, Mandatory, HelpMessage = "Enter the vault name.")]
+        [Parameter(
+            Position = 0,
+            Mandatory,
+            HelpMessage = "Enter the vault name."
+        )]
+        [ArgumentCompleter( {(Get-SecretVault).Name})]
         [ValidateNotNullOrEmpty()]
         [Alias("Name")]
-        [string]$Vault,
-        [Parameter(Mandatory, HelpMessage = "Enter the secure string password to unlock the vault.")]
+        [String]$Vault,
+        [Parameter(
+            Mandatory,
+            HelpMessage = "Enter the secure string password to unlock the vault."
+        )]
         [SecureString]$Password,
         [Parameter(HelpMessage = "Skip testing the vault.")]
-        [switch]$SkipTest
+        [Switch]$SkipTest,
+
+        [Parameter(
+            ParameterSetName = "asFile",
+            Mandatory,
+            HelpMessage = "Enter the filename and path for your cliXML export.")]
+        [ValidatePattern(".*\.xml$")]
+        [string]$FilePath,
+
+        [Parameter(
+            ParameterSetName = "asObject",
+            HelpMessage = "Export the secrets as native objects that you can save to a file option of your choice.")]
+        [switch]$AsObject
     )
 
     Write-Verbose "Starting $($MyInvocation.MyCommand)"
+    $list = [System.Collections.Generic.list[object]]::new()
     Try {
         Write-Verbose "Testing the vault [$Vault]"
         Unlock-SecretStore -Password $Password -ErrorAction Stop
@@ -48,8 +69,8 @@ Function Export-SecretStore {
                     Default { $value = "Unknown" }
                 }
 
-                [pscustomobject]@{
-                    PSTypename   = "SecretExport"
+                $SecretExport = [PSCustomObject]@{
+                    PSTypeName   = "SecretExport"
                     Name         = $secret.Name
                     Vault        = $secret.VaultName
                     Metadata     = $secret.Metadata
@@ -59,8 +80,17 @@ Function Export-SecretStore {
                     Computername = [System.Environment]::MachineName
                     Username     = "$([System.Environment]::UserDomainName)\$([System.Environment]::UserName)"
                 }
+                $list.Add($SecretExport)
             } #foreach secret
-        }
+            if ($AsObject) {
+                Write-Verbose "Returning $($list.count) secrets as objects"
+                $list
+            }
+            else {
+                Write-Verbose "Exporting $($list.count) secrets to $FilePath"
+                $list | Export-Clixml -Path $FilePath -Force
+            }
+        } #is $secrets
         else {
             Write-Warning "No secrets found in $Vault. Nothing to do."
         }

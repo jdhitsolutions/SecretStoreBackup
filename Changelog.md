@@ -1,12 +1,19 @@
 # Changelog for SecretStoreBackup
 
-## 0.2.0
+## [Unreleased]
 
-+ Removed parameter validation on `-Vault` parameter in `Import-SecretStore`.
-+ Updated help.
+## 0.3.0 - 2024-10-17
 
-## 0.0.1
+### Added
 
-+ Initial files and module testing
-+ Added help stubs
-+ Added alias `xss` for `Export-SecretStore` and `iss` for `Import-SecretStore`
+- Added parameter `AsObject` to `Export-SecretStore` to return the exported data as an objects.
+- Added parameter `FilePath` to `Export-SecretStore` to export to a cliXML file.
+
+### Changed
+
+- General code cleanup
+- Modified `Export-SecretStore` to export to a cliXML file by default.
+- Help updates
+- Updated `README.md`.
+
+[Unreleased]: https://github.com/jdhitsolutions/SecretStoreBackup/compare/v0.3.0..HEAD

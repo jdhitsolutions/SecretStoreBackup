@@ -1,29 +1,39 @@
 
 Function Import-SecretStore {
     [CmdletBinding(SupportsShouldProcess)]
-    [alias("iss")]
+    [alias('iss')]
     Param(
-        [Parameter(Position = 0, Mandatory, HelpMessage = "secret name.", ValueFromPipelineByPropertyName)]
+        [Parameter(
+            Position = 0,
+            Mandatory,
+            HelpMessage = 'Specify a secret name.',
+            ValueFromPipelineByPropertyName
+        )]
         [ValidateNotNullOrEmpty()]
-        [string]$Name,
-        [Parameter(Position = 1, Mandatory, HelpMessage = "secret value.", ValueFromPipelineByPropertyName)]
+        [String]$Name,
+        [Parameter(
+            Position = 1,
+            Mandatory,
+            HelpMessage = 'Specify a secret value.',
+            ValueFromPipelineByPropertyName
+        )]
         [object]$Value,
-        [Parameter(HelpMessage = "the secret type", ValueFromPipelineByPropertyName)]
-        [alias("OriginalType")]
-        [ValidateSet("String", "SecureString", "Hashtable", "ByteArray", "PSCredential")]
-        [string]$Type = "SecureString",
+        [Parameter(HelpMessage = 'the secret type', ValueFromPipelineByPropertyName)]
+        [alias('OriginalType')]
+        [ValidateSet('String', 'SecureString', 'Hashtable', 'ByteArray', 'PSCredential')]
+        [String]$Type = 'SecureString',
         [Parameter(ValueFromPipelineByPropertyName)]
         [hashtable]$Metadata,
-        [switch]$NoClobber,
-        [Parameter( Mandatory, HelpMessage = "Enter the vault name.")]
+        [Switch]$NoClobber,
+        [Parameter( Mandatory, HelpMessage = 'Enter the vault name.')]
         [ValidateNotNullOrEmpty()]
-        [string]$Vault,
-        [Parameter(Mandatory, HelpMessage = "Enter the secure string password to unlock the vault.")]
+        [String]$Vault,
+        [Parameter(Mandatory, HelpMessage = 'Enter the secure string password to unlock the vault.')]
         [SecureString]$Password
     )
 
     Begin {
-        Write-Verbose "Starting $($myinvocation.mycommand)"
+        Write-Verbose "Starting $($MyInvocation.MyCommand)"
         Try {
             Write-Verbose "Testing the vault [$Vault]"
             Unlock-SecretStore -Password $Password -ErrorAction Stop
@@ -44,61 +54,70 @@ Function Import-SecretStore {
                 NoClobber = $NoClobber
             }
             if ($Metadata) {
-                Write-Verbose "Adding metadata"
-                 #recreate the hashtable
-                 $pso = $metadata.psobject
-                 if ($pso.ImmediateBaseObject) {
-                     $meta =$pso.ImmediateBaseObject
-                 }
-                 elseif ($pso.BaseObject) {
-                     $meta = $pso.BaseObject
-                 }
-                 else {
-                     $pso.properties |
-                     ForEach-Object -Begin { $meta = @{} } -Process { $meta.Add($_.Name, $_.value) }
-                 }
-                $params["Metadata"] = $Meta
+                Write-Verbose 'Adding metadata'
+                #recreate the hashtable
+                $pso = $metadata.PSObject
+                if ($pso.ImmediateBaseObject) {
+                    $meta = $pso.ImmediateBaseObject
+                }
+                elseif ($pso.BaseObject) {
+                    $meta = $pso.BaseObject
+                }
+                else {
+                    $pso.properties |
+                    ForEach-Object -Begin {
+                        $meta = @{}
+                    } -Process {
+                        $meta.Add($_.Name, $_.value)
+                    }
+                }
+                $params['Metadata'] = $Meta
             }
             #build the secret value
             Switch ($Type) {
-                "SecureString" { $params["SecureStringSecret"] = ConvertTo-SecureString -AsPlainText -Force -String $Value }
-                "PSCredential" {
+                'SecureString' { $params['SecureStringSecret'] = ConvertTo-SecureString -AsPlainText -Force -String $Value }
+                'PSCredential' {
                     #recreate the credential
                     $pass = ConvertTo-SecureString -AsPlainText -Force -String $Value.password
                     $cred = [PSCredential]::New($value.username, $Pass)
-                    $params["Secret"] = $cred
+                    $params['Secret'] = $cred
                 }
-                "ByteArray" {
+                'ByteArray' {
                     if ($value -is [byte[]]) {
-                        $params["Secret"] = $Value
+                        $params['Secret'] = $Value
                     }
                     else {
-                        $params["Secret"] = [byte[]]$value.value
+                        $params['Secret'] = [byte[]]$value.value
                     }
                 }
-                "Hashtable" {
+                'Hashtable' {
                     #recreate the hashtable
-                    $pso = $value.psobject
+                    $pso = $value.PSObject
                     if ($pso.ImmediateBaseObject) {
-                        $params["Secret"] =$pso.ImmediateBaseObject
+                        $params['Secret'] = $pso.ImmediateBaseObject
                     }
                     elseif ($pso.BaseObject) {
-                        $params["Secret"] =$pso.BaseObject
+                        $params['Secret'] = $pso.BaseObject
                     }
                     else {
                         $pso.properties |
-                        ForEach-Object -Begin { $hash = @{} } -Process { $hash.Add($_.Name, $_.value) }
-                        $params["Secret"] = $hash
+                        ForEach-Object -Begin {
+                            $hash = @{}
+                        }
+                        -Process {
+                            $hash.Add($_.Name, $_.value)
+                        }
+                        $params['Secret'] = $hash
                     }
                 }
-                Default { $params["Secret"] = $Value }
+                Default { $params['Secret'] = $Value }
             }
             # $params | Out-String | Write-Verbose
             Set-Secret @params
         }
     } #process
     End {
-        Write-Verbose "Ending $($myinvocation.mycommand)"
+        Write-Verbose "Ending $($MyInvocation.MyCommand)"
     } #end
 }
 

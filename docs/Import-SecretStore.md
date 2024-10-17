@@ -14,8 +14,7 @@ Import items into a Secrets Management vault.
 ## SYNTAX
 
 ```yaml
-Import-SecretStore [-Name] <String> [-Value] <Object> [-Type <String>] [-Metadata <Hashtable>] [-NoClobber]
- -Vault <String> -Password <SecureString> [-WhatIf] [-Confirm] [<CommonParameters>]
+Import-SecretStore [-Name] <String> [-Value] <Object> [-Type <String>] [-Metadata <Hashtable>] [-NoClobber] -Vault <String> -Password <SecureString> [-WhatIf] [-Confirm] [<CommonParameters>]
 ```
 
 ## DESCRIPTION
@@ -29,7 +28,7 @@ It is possible that not all metadata will be properly imported or imported as th
 ### Example 1
 
 ```powershell
-PS C:\> Import-clixml c:\work\saved.xml | Import-SecretStore -vault NewSecrets
+PS C:\> Import-Clixml c:\work\saved.xml | Import-SecretStore -vault NewSecrets
 ```
 
 This example assumes that saved.xml was created using Export-SecretStore. The file is imported and piped to Import-SecretStore which recreates the entries in the specified vault. The vault must already exist. You will be prompted for the vault password.
@@ -37,8 +36,8 @@ This example assumes that saved.xml was created using Export-SecretStore. The fi
 ### Example 2
 
 ```powershell
-PS C:\> Register-SecretVault -Name demo -Description "test vault" -ModuleName microsoft.powershell.secretstore
-PS C:\> $in = Get-Content C:\work\demo.json | convertfrom-json
+PS C:\> Register-SecretVault -Name demo -Description "test vault" -ModuleName Microsoft.Powershell.SecretStore
+PS C:\> $in = Get-Content C:\work\demo.json | ConvertFrom-json
 PS C:\> $in | Import-SecretStore -vault demo
 ```
 
@@ -201,7 +200,6 @@ Accept wildcard characters: False
 ```
 
 ### CommonParameters
-
 This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable, -InformationAction, -InformationVariable, -OutVariable, -OutBuffer, -PipelineVariable, -Verbose, -WarningAction, and -WarningVariable. For more information, see [about_CommonParameters](http://go.microsoft.com/fwlink/?LinkID=113216).
 
 ## INPUTS
