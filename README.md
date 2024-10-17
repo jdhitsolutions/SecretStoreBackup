@@ -1,5 +1,7 @@
 # SecretStoreBackup
 
+[![PSGallery Version](https://img.shields.io/powershellgallery/v/SecretStoreBackup.png?style=for-the-badge&label=PowerShell%20Gallery)](https://www.powershellgallery.com/packages/SecretStoreBackup/) [![PSGallery Downloads](https://img.shields.io/powershellgallery/dt/SecretStoreBackup.png?style=for-the-badge&label=Downloads)](https://www.powershellgallery.com/packages/SecretStoreBackup/)
+
 This is a simple PowerShell module designed to backup and restore a secrets management vault. The module assumes you are using at least the `Microsoft.PowerShell.SecretStore` and `Microsoft.PowerShell.SecretManagement` modules. I have not tested with 3rd part secrets management extensions, but as long as your secrets vaults can be managed with `Get-Secret`, `Get-SecretInfo`, and `Set-Secret`, you should be fine.
 
 You can install this module from the PowerShell Gallery:
