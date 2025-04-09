@@ -2,6 +2,14 @@
 
 ## [Unreleased]
 
+## [0.4.0] - 2025-04-09
+
+### Changed
+
+- Updated license
+- Updated help files with online links
+- Updated `README`
+
 ## 0.3.0 - 2024-10-17
 
 ### Added
@@ -16,4 +24,5 @@
 - Help updates
 - Updated `README.md`.
 
-[Unreleased]: https://github.com/jdhitsolutions/SecretStoreBackup/compare/v0.3.0..HEAD
+[Unreleased]: https://github.com/jdhitsolutions/SecretStoreBackup/compare/v0.4.0..HEAD
+[0.4.0]:

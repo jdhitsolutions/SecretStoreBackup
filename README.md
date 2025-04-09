@@ -2,19 +2,19 @@
 
 [![PSGallery Version](https://img.shields.io/powershellgallery/v/SecretStoreBackup.png?style=for-the-badge&label=PowerShell%20Gallery)](https://www.powershellgallery.com/packages/SecretStoreBackup/) [![PSGallery Downloads](https://img.shields.io/powershellgallery/dt/SecretStoreBackup.png?style=for-the-badge&label=Downloads)](https://www.powershellgallery.com/packages/SecretStoreBackup/)
 
-This is a simple PowerShell module designed to backup and restore a secrets management vault. The module assumes you are using at least the `Microsoft.PowerShell.SecretStore` and `Microsoft.PowerShell.SecretManagement` modules. I have not tested with 3rd part secrets management extensions, but as long as your secrets vaults can be managed with `Get-Secret`, `Get-SecretInfo`, and `Set-Secret`, you should be fine.
+This is a simple PowerShell module designed to backup and restore a secrets management vault. The module assumes you are using at least the `Microsoft.PowerShell.SecretStore` and `Microsoft.PowerShell.SecretManagement` modules. I have not tested with 3rd party secrets management extensions, but as long as your secrets vaults can be managed with `Get-Secret`, `Get-SecretInfo`, and `Set-Secret`, you should be fine.
 
 You can install this module from the PowerShell Gallery:
 
 ```powershell
-Install-Module -Name SecretStoreBackup
+Install-PSResource -Name SecretStoreBackup
 ```
 
 If you do not have the `Microsoft.PowerShell.SecretStore` and `Microsoft.PowerShell.SecretManagement` modules, already installed, they will be installed with this module.
 
 The premise behind this module is simple.
 
-## Export-SecretStore
+## [Export-SecretStore](docs/Export-SecretStore.md)
 
 This command will export all secrets and secret information into an XML file using `Export-Clixml`.
 
@@ -32,7 +32,7 @@ You might choose this option if you want to handle your own import.
 
 :warning: The export process will expose __all secrets in plaintext__. It is up to you to protect and safeguard the exported file. This is what allows you to import the secrets into a new vault on another computer.
 
-## Import-SecretStore
+## [Import-SecretStore](docs/Import-SecretStore.md)
 
 The import process is a simple reversal of the export process assuming you used the XML option. The target vault must already exist.
 

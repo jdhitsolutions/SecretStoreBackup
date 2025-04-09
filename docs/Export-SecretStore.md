@@ -1,7 +1,7 @@
 ---
 external help file: SecretStoreBackup-help.xml
 Module Name: SecretStoreBackup
-online version:
+online version: https://jdhitsolutions.com/yourls/b0e5ab
 schema: 2.0.0
 ---
 
@@ -32,7 +32,6 @@ Export-SecretStore will export all secrets in a Secret Management store. Each se
 NOTE: SECRETS WILL BE EXPORTED AS PLAIN TEXT. IF YOU EXPORT TO A FILE YOU MUST PROTECT IT.
 
 ## EXAMPLES
-
 
 ### Example 1
 
@@ -181,7 +180,7 @@ This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable
 
 ## NOTES
 
-Learn more about PowerShell: http://jdhitsolutions.com/blog/essential-powershell-resources/
+Learn more about PowerShell: https://jdhitsolutions.com/yourls/newsletter
 
 ## RELATED LINKS
 
